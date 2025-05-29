@@ -35,18 +35,23 @@
 
 .slider-btn {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  background: rgba(0, 0, 0, 0.5);
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  height: 97%;
+  background: rgba(0, 0, 0, 0.35);
   border: none;
-  border-radius: 50%;
+  border-radius: 8px;
   color: white;
   cursor: pointer;
   z-index: 10;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .wrapper:hover .slider-btn {
@@ -54,15 +59,19 @@
 }
 
 .slider-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .slider-btn.left {
-  left: 10px;
+  left: 0;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 .slider-btn.right {
-  right: 10px;
+  right: 0;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .card-list {
