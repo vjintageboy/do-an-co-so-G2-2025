@@ -19,12 +19,6 @@ const TitleCards = ({title, category}) => {
 };
 
 
-
-const handlewheel = (event)=>{
-  event.preventDefault();
-  cardsRef.current.scrollLeft += event.deltaY;
-}
-
 useEffect(()=>{
 
   fetch(`https://api.themoviedb.org/3/movie/${category?category:"now_playing"}?language=en-US&page=1`, options)
@@ -32,20 +26,34 @@ useEffect(()=>{
   .then(res => setApiData(res.results))
   .catch(err => console.error(err));
 
-  cardsRef.current.addEventListener('wheel', handlewheel)
 },[])
+
+const slideLeft = () => {
+    cardsRef.current.scrollLeft -= 500;
+  }
+
+  const slideRight = () => {
+    cardsRef.current.scrollLeft += 500;
+  }
 
   return (
     <div className='title-cards'>
       <h2>{title?title:"Popular on Netflix"}</h2>
-      <div className="card-list" ref={cardsRef}>
-        {apiData.map((card, index)=>{
-          return <Link to={`/player/${card.id}`} className="card" key={index}>
-            <img src={`https://image.tmdb.org/t/p/original/`+card.backdrop_path} alt="" />
-            <p>{card.original_title}</p>
-          </Link>
-        
-        })}
+      <div className="wrapper">
+        <button className="slider-btn left" onClick={slideLeft}>
+          <i className="fas fa-chevron-left"></i>
+        </button>
+        <div className="card-list" ref={cardsRef}>
+          {apiData.map((card, index)=>{
+            return <Link to={`/player/${card.id}`} className="card" key={index}>
+              <img src={`https://image.tmdb.org/t/p/original/`+card.backdrop_path} alt="" />
+              <p>{card.original_title}</p>
+            </Link>
+          })}
+        </div>
+        <button className="slider-btn right" onClick={slideRight}>
+          <i className="fas fa-chevron-right"></i>
+        </button>
       </div>
     </div>
   )
