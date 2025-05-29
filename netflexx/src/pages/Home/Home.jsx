@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './Home.css'
 import Navbar from '../../components/Navbar/Navbar'
 import hero_banner from '../../assets/hero_banner.jpg'
@@ -7,11 +7,14 @@ import play_icon from '../../assets/play_icon.png'
 import info_icon from '../../assets/info_icon.png'
 import TitleCards from '../../components/TitleCards/TitleCards'
 import Footer from '../../components/Footer/Footer'
+import videobanner from '../../assets/Greece.mp4'
 
 
 const Home = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
+  const [isMuted, setIsMuted] = useState(false); // Bật tiếng mặc định
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,19 +51,60 @@ const Home = () => {
     }
   }, [isAtTop]);
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+    }
+  }, [isMuted, showVideo]);
+
+  const handleMuteToggle = () => {
+    if (videoRef.current) {
+      if (isMuted) {
+        videoRef.current.muted = false;
+        // Nếu video bị pause thì play lại
+        if (videoRef.current.paused) {
+          videoRef.current.play();
+        }
+      } else {
+        videoRef.current.muted = true;
+      }
+    }
+    setIsMuted((prev) => !prev);
+  };
+
   return (
     <div className='home'>
       <Navbar/>
       <div className="hero">
         {showVideo ? (
-          <iframe 
-            className='banner-video'
-            width="100%" 
-            height="100%"
-            src="https://www.youtube.com/embed/M9XzHK4Hm4w?autoplay=1&mute=1&controls=0&loop=1&playlist=M9XzHK4Hm4w"
-            frameBorder="0"
-            allow="autoplay; encrypted-media"
-          ></iframe>
+          <div style={{position: 'relative'}}>
+            <video
+              className='banner-video'
+              ref={videoRef}
+              width="100%"
+              height="100%"
+              src={videobanner}
+              autoPlay
+              loop
+              muted={isMuted}
+              controls={false}
+              playsInline
+              style={{display: 'block'}}
+            />
+            <button
+              className={`mute-btn${isMuted ? ' muted' : ''}`}
+              onClick={handleMuteToggle}
+              aria-label={isMuted ? 'Unmute' : 'Mute'}
+            >
+              {isMuted ? (
+                // Biểu tượng mute SVG giống Netflix
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+              ) : (
+                // Biểu tượng unmute SVG giống Netflix
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9H2v6h4l5 4V5z"/><path d="M19 12c0-2.21-1.79-4-4-4"/><path d="M19 12c0 2.21-1.79 4-4 4"/></svg>
+              )}
+            </button>
+          </div>
         ) : (
           <img src={hero_banner} alt="" className='banner-img'/>
         )}
